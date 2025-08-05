@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offensive Security Research Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-gray-800 p-4 text-center shadow-md">
+    <h1 class="text-3xl font-bold">⚔️ Offensive Security Tools</h1>
+    <p class="text-gray-400">by <a href="https://github.com/nemocyberworld">Captain Nemo</a> | <a href="https://hacktolive.net/">HackToLive</a></p>
+  </header>
+
+  <!-- Layout -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 p-4 overflow-y-auto border-r border-gray-700">
+      <h2 class="text-lg font-semibold mb-4">Categories</h2>
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search tools..."
+        class="w-full mb-4 px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
+
+      <ul id="categoryList" class="space-y-2 text-sm"></ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <div id="walkthroughContent" class="bg-gray-800 p-6 rounded-xl shadow-md">
+        <h2 class="text-2xl font-bold mb-4">🧠 Welcome to Your Hacking Arsenal</h2>
+        <p class="text-gray-300 mb-4">
+          This platform documents all types of hacking tools and techiniques. Offensive Security focussed.
+        </p>
+
+        <h3 class="text-xl font-semibold mt-6 mb-2">📂 Main Categories</h3>
+        <ul id="categoryOverview" class="list-disc ml-6 text-gray-400 space-y-1"></ul>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-center text-gray-400 text-sm py-3 px-4 mt-auto border-t border-gray-700 select-none">
+    <p>© 2025 Captain Nemo | Visit <a href="https://hacktolive.net/" class="text-purple-400 underline">HackToLive</a></p>
+  </footer>
+
+<script>
+  const walkthroughs = [
+    { main: "Kernel Exploits", sub: "CVE-2022-0847 DirtyPipe Exploits", path: "CVEs/CVE-2022-0847-DirtyPipe-Exploits/index.html" },
+    { main: "Vulnerability Exploits", sub: "Apache 2.4.49 RCE", path: "Exploits/Apache-RCE/index.html" },
+    { main: "Fuzzers", sub: "Kernel Fuzzing Discovery", path: "ZeroDays/Kernel/index.html" },
+    { main: "Web Exploitation Tools", sub: "Stored XSS in Flask", path: "Web/Flask-XSS/index.html" },
+    { main: "Privilege Escalation Tools", sub: "Linux SUID Binary Abuse", path: "PrivEsc/SUID/index.html" },
+    { main: "Active Directory Tools", sub: "Kerberoasting Basics", path: "AD/Kerberoasting/index.html" },
+    { main: "Binary Exploitation", sub: "ret2libc on Ubuntu", path: "Binary/ret2libc/index.html" },
+    { main: "Fuzzers", sub: "Fuzzing with AFL++", path: "Fuzzing/AFL/index.html" },
+    { main: "CTF Tools", sub: "PicoCTF: Caesar Cipher", path: "CTF/PicoCTF/index.html" },
+    { main: "Recon Tools", sub: "Custom Python Port Scanner", path: "Tools/Scanner/index.html" },
+    { main: "Red Team Frameworks", sub: "Payload Delivery via HTA", path: "RedTeam/HTA/index.html" },
+    { main: "Wireless Tools", sub: "WPA2 Cracking", path: "Wireless/WPA2/index.html" },
+    { main: "OSINT Tools", sub: "Email Recon with Hunter.io", path: "OSINT/Hunter/index.html" },
+    { main: "Social Engineering Kits", sub: "Phishing with Evilginx", path: "SE/Phishing/index.html" },
+    { main: "Cloud Pentesting Tools", sub: "AWS S3 Bucket Enumeration", path: "Cloud/AWS-S3/index.html" },
+    { main: "Post-Exploitation Tools", sub: "Dumping LSASS with procdump", path: "PostEx/LSASS/index.html" },
+    { main: "Evasion Techniques", sub: "Living off the Land Binaries (LOLBins)", path: "Evasion/LOLBins/index.html" },
+    { main: "Reverse Engineering Tools", sub: "Reverse a CrackMe in Ghidra", path: "Reverse/CrackMe/index.html" },
+    { main: "C2 Frameworks", sub: "Slack C2 Bot PoC", path: "C2/Slack/index.html" },
+    { main: "Browser Exploitation", sub: "XSS to RCE via Extension", path: "Browser/XSS-RCE/index.html" },
+    { main: "IoT & Hardware Tools", sub: "UART Dump on ESP32", path: "IoT/UART/index.html" },
+    { main: "Container Security Tools", sub: "Privileged Container Escape", path: "Containers/Escape/index.html" },
+    { main: "ML in Security", sub: "Adversarial Malware Evasion", path: "ML/Evasion/index.html" }
+  ];
+
+  const categoryList = document.getElementById("categoryList");
+  const walkthroughContent = document.getElementById("walkthroughContent");
+  const categoryOverview = document.getElementById("categoryOverview");
+  const searchInput = document.getElementById("searchInput");
+
+  const grouped = {};
+  walkthroughs.forEach(w => {
+    if (!grouped[w.main]) grouped[w.main] = [];
+    grouped[w.main].push(w);
+  });
+
+  function updateCategoryOverview(filteredGrouped = null) {
+    categoryOverview.innerHTML = "";
+    const source = filteredGrouped || grouped;
+    Object.keys(source).forEach(mainCat => {
+      const li = document.createElement("li");
+      li.textContent = `${mainCat} (${source[mainCat].length})`;
+      categoryOverview.appendChild(li);
+    });
+  }
+
+  function buildCategoryList(filteredGrouped = null) {
+    categoryList.innerHTML = "";
+    const source = filteredGrouped || grouped;
+    const isFiltered = filteredGrouped !== null;
+
+    Object.keys(source).forEach(mainCat => {
+      const container = document.createElement("li");
+      container.innerHTML = `
+        <details class="group" ${isFiltered ? "open" : ""}>
+          <summary class="cursor-pointer px-3 py-2 rounded-md hover:bg-gray-700 font-semibold">${mainCat}</summary>
+          <ul class="pl-4 mt-2 space-y-1 text-sm">
+            ${source[mainCat].map(w => `
+              <li>
+                <button onclick="loadWalkthrough('${w.path}')" class="text-left w-full px-2 py-1 hover:bg-gray-700 rounded">
+                  ${w.sub}
+                </button>
+              </li>
+            `).join("")}
+          </ul>
+        </details>
+      `;
+      categoryList.appendChild(container);
+    });
+
+    updateCategoryOverview(filteredGrouped);
+  }
+
+  buildCategoryList();
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    if (!query) {
+      buildCategoryList();
+      return;
+    }
+
+    const filteredGrouped = {};
+    Object.keys(grouped).forEach(mainCat => {
+      const filteredSubs = grouped[mainCat].filter(walk =>
+        walk.main.toLowerCase().includes(query) ||
+        walk.sub.toLowerCase().includes(query)
+      );
+      if (filteredSubs.length > 0) filteredGrouped[mainCat] = filteredSubs;
+    });
+
+    buildCategoryList(filteredGrouped);
+  });
+
+  async function loadWalkthrough(path) {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error("File not found");
+      const html = await res.text();
+      walkthroughContent.innerHTML = html;
+    } catch (err) {
+      walkthroughContent.innerHTML = `<p class="text-red-400">⚠️ Error loading content: ${err.message}</p>`;
+    }
+  }
+</script>
+
+</body>
+</html>
