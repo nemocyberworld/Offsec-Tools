@@ -1,0 +1,71 @@
+<h2 class="text-2xl font-bold mb-4">🌐 Assetfinder: Subdomain Discovery Tool</h2>
+<p class="text-gray-300 mb-4">Assetfinder is a powerful reconnaissance tool designed to find domains and subdomains potentially related to a given root domain. It's used extensively in OSINT, bug bounty hunting, and red teaming to expand attack surfaces quickly.</p>
+
+<ul class="list-disc ml-6 text-gray-400 space-y-2 mb-6">
+  <li>Goal: Discover related subdomains for a given target</li>
+  <li>Method: Passive enumeration using public APIs and sources</li>
+  <li>Use case: Bug bounty, pentesting, asset discovery</li>
+</ul>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">🔍 What is Assetfinder?</h3>
+<p class="text-gray-300 mb-4">
+Assetfinder queries multiple online sources to gather domains, subdomains, and related infrastructure associated with your target. It’s written in Go, supports both CLI and scripting workflows, and uses public APIs like crt.sh, HackerTarget, VirusTotal, and more.
+</p>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">📦 Supported Data Sources</h3>
+<ul class="list-disc ml-6 text-gray-400 space-y-2 mb-6">
+  <li><strong>crt.sh:</strong> Certificate Transparency logs</li>
+  <li><strong>certspotter:</strong> SSL certificate search</li>
+  <li><strong>threatcrowd:</strong> Threat intel aggregator</li>
+  <li><strong>hackerTarget:</strong> DNS-based subdomain discovery</li>
+  <li><strong>VirusTotal:</strong> Malware database (needs <code>VT_API_KEY</code>)</li>
+  <li><strong>Facebook:</strong> Domain detection via Graph API (needs <code>FB_APP_ID</code> and <code>FB_APP_SECRET</code>)</li>
+  <li><strong>Spyse / FindSubDomains:</strong> Passive DNS search (needs <code>SPYSE_API_TOKEN</code>)</li>
+  <li><strong>urlscan.io:</strong> Indexes scanned web pages and subdomains</li>
+  <li><strong>dns.bufferover.run:</strong> Passive DNS records</li>
+</ul>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">⚙️ Installation</h3>
+<pre class="bg-gray-900 text-green-400 text-sm p-4 rounded overflow-x-auto whitespace-pre-wrap">
+go install -v github.com/tomnomnom/assetfinder@latest
+</pre>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">🚀 Usage</h3>
+<pre class="bg-gray-900 text-blue-400 text-sm p-4 rounded overflow-x-auto whitespace-pre-wrap">
+# Basic usage:
+assetfinder example.com
+
+# Only show subdomains:
+assetfinder --subs-only example.com
+</pre>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">📁 Sample Output</h3>
+<pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-auto text-sm">
+blog.example.com
+cdn.example.com
+mail.example.com
+vpn.example.com
+</pre>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">🔧 Advanced Features</h3>
+<ul class="list-disc ml-6 text-gray-400 space-y-2 mb-6">
+  <li><strong>Concurrency:</strong> Executes multiple API queries in parallel</li>
+  <li><strong>Rate Limiting:</strong> Per-source delay to avoid bans</li>
+  <li><strong>De-duplication:</strong> Avoids repeated results</li>
+  <li><strong>Scriptable:</strong> Reads input from STDIN or CLI args</li>
+</ul>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">🧠 Summary for Beginners</h3>
+<p class="text-gray-300 mb-4">
+If you're hunting for hidden subdomains during a bug bounty or recon phase, Assetfinder saves you time by aggregating results from trusted sources. Just give it a domain, and it gives you a list of potential assets to investigate—no DNS brute-force required.
+</p>
+
+<p class="text-gray-300 italic mb-4">Tip: Combine Assetfinder with tools like <code>httpx</code> and <code>nmap</code> for deeper recon.</p>
+
+<h3 class="text-xl font-bold text-gray-100 mb-2">🔗 Resources</h3>
+<ul class="list-disc ml-6 text-gray-400 space-y-2 mb-6">
+  <li><a href="https://github.com/tomnomnom/assetfinder" class="text-blue-400 underline" target="_blank">Official GitHub Repository</a></li>
+  <li><a href="https://crt.sh" class="text-blue-400 underline" target="_blank">crt.sh</a> - Certificate search engine</li>
+  <li><a href="https://urlscan.io" class="text-blue-400 underline" target="_blank">urlscan.io</a> - Scan index and passive data</li>
+  <li><a href="https://virustotal.com" class="text-blue-400 underline" target="_blank">VirusTotal</a> - Threat and subdomain discovery</li>
+</ul>
